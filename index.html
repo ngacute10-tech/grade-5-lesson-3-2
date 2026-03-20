@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Homework</title>
+
+<style>
+body{
+font-family: Arial;
+background:#eef3ff;
+text-align:center;
+margin:0;
+}
+
+.box{
+background:white;
+max-width:380px;
+margin:20px auto;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+button{
+padding:12px;
+margin:5px;
+width:90%;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
+input{
+padding:10px;
+width:85%;
+margin:8px;
+font-size:16px;
+}
+
+#result{
+font-weight:bold;
+margin-top:10px;
+font-size:18px;
+}
+
+#score{
+color:#e67e22;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📚 Vocabulary Homework</h2>
+
+<div class="box">
+
+<input id="name" placeholder="Enter your name">
+
+<h3 id="word">writer</h3>
+<p id="ipa">/ˈraɪtər/</p>
+<p id="mean">người viết</p>
+
+<button onclick="listen()">🔊 Listen</button>
+<button onclick="speak()">🎤 Speak</button>
+
+<input id="ans" placeholder="Type here">
+
+<button onclick="check()">Check</button>
+
+<p id="result"></p>
+<p id="score">Score: 0</p>
+
+<button onclick="next()">Next ➜</button>
+
+</div>
+
+<script>
+
+const data = [
+{w:"writer",ipa:"/ˈraɪtər/",m:"người viết"},
+{w:"piano player",ipa:"/piˈænəʊ pleɪər/",m:"người chơi đàn piano"},
+{w:"zookeeper",ipa:"/ˈzuːkiːpər/",m:"người chăm sóc thú"},
+{w:"baker",ipa:"/ˈbeɪkər/",m:"thợ làm bánh"},
+{w:"chef",ipa:"/ʃef/",m:"đầu bếp"},
+{w:"artist",ipa:"/ˈɑːrtɪst/",m:"họa sĩ"}
+];
+
+let i=0;
+let score=0;
+
+function show(){
+document.getElementById("word").innerText=data[i].w;
+document.getElementById("ipa").innerText=data[i].ipa;
+document.getElementById("mean").innerText=data[i].m;
+document.getElementById("ans").value="";
+document.getElementById("result").innerText="";
+}
+
+function next(){
+i++;
+if(i>=data.length) i=0;
+show();
+}
+
+// 🔊 NGHE (100% ổn định)
+function listen(){
+let word = data[i].w;
+let audio = new Audio("audio/" + word + ".mp3");
+
+audio.play().catch(()=>{
+alert("⚠️ Missing audio file: " + word);
+});
+}
+
+// 🎤 NÓI (AI – nếu hỗ trợ)
+function speak(){
+
+if (!('webkitSpeechRecognition' in window)) {
+alert("⚠️ Chức năng nói chỉ dùng tốt trên Chrome máy tính!");
+return;
+}
+
+let r = new webkitSpeechRecognition();
+r.lang="en-US";
+r.start();
+
+r.onresult=function(e){
+document.getElementById("ans").value=e.results[0][0].transcript.toLowerCase();
+};
+}
+
+// CHECK
+function check(){
+if(document.getElementById("ans").value.toLowerCase()==data[i].w){
+document.getElementById("result").innerText="✅ Correct";
+score++;
+}else{
+document.getElementById("result").innerText="❌ Try again";
+}
+document.getElementById("score").innerText="Score: " + score;
+}
+
+show();
+
+</script>
+
+</body>
+</html>
